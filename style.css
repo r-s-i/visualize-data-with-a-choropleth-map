@@ -1,3 +1,10 @@
-* {
+main {
+  text-align: center;
+}
+svg {
   outline: red solid 1px;
+}
+.county {
+  stroke: green;
+  stroke-width: 0.75px;
 }
