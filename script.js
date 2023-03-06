@@ -67,6 +67,8 @@ async function drawMap() {
             }
           }
         });
+
+      svg.append("legend").attr("id", "legend");
     });
 }
 drawMap();
