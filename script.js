@@ -46,6 +46,13 @@ async function drawMap() {
             }
           }
         })
+        .attr("countyName", (d) => {
+          for (let i = 0; i < educationData.length; i++) {
+            if (d.id === educationData[i].fips) {
+              return educationData[i].area_name;
+            }
+          }
+        })
 
         .style("fill", (d) => {
           for (let i = 0; i < educationData.length; i++) {
@@ -66,6 +73,22 @@ async function drawMap() {
               }
             }
           }
+        })
+
+        .on("mouseover", (e) => {
+          const countyName = e.target.attributes.countyName.value;
+          const countyProcent = e.target.attributes["data-education"].value;
+          const tooltipOuter = svg.append("g").attr("id", "tooltip");
+
+          const tooltipInner = tooltipOuter
+            .append("foreignObject")
+            .attr("width", 250)
+            .attr("height", 50)
+            .html(`${countyName}: ${countyProcent} %`);
+        })
+        .on("mouseout", (e) => {
+          const tooltipOuter = d3.select("#tooltip");
+          tooltipOuter.remove();
         });
 
       const legend = svg
