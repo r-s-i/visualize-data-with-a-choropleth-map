@@ -38,6 +38,9 @@ async function drawMap() {
         .append("path")
         .attr("d", path)
         .attr("class", "county")
+        .attr("data-fips", (d) => d.id)
+        .attr("data-education", (_, i) => educationData[i].bachelorsOrHigher)
+
         .style("fill", (d) => {
           for (let i = 0; i < educationData.length; i++) {
             if (d.id === educationData[i].fips) {
