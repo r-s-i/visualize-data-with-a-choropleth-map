@@ -76,8 +76,9 @@ async function drawMap() {
         })
 
         .on("mouseover", (e) => {
-          const countyName = e.target.attributes.countyName.value;
-          const countyProcent = e.target.attributes["data-education"].value;
+          const attributes = e.target.attributes;
+          const countyName = attributes.countyName.value;
+          const countyProcent = attributes["data-education"].value;
           const tooltipOuter = svg
             .append("g")
             .attr("id", "tooltip")
