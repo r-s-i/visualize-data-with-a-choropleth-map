@@ -8,12 +8,12 @@ const svg = d3
   .attr("height", height);
 
 const colors = [
-  "rgb(0, 255, 0)",
-  "rgb(45, 255, 102)",
-  "rgb(90, 255, 153)",
-  "rgb(135, 255, 204)",
-  "rgb(180, 255, 255)",
   "rgb(210, 255, 255)",
+  "rgb(180, 255, 255)",
+  "rgb(135, 255, 204)",
+  "rgb(90, 255, 153)",
+  "rgb(45, 255, 102)",
+  "rgb(0, 255, 0)",
 ];
 
 async function drawMap() {
@@ -68,7 +68,20 @@ async function drawMap() {
           }
         });
 
-      svg.append("legend").attr("id", "legend");
+      const legend = svg
+        .append("g")
+        .attr("id", "legend")
+        .attr("transform", `translate(10,10)`);
+      legend
+        .selectAll("rect")
+        .data(colors)
+        .enter()
+        .append("rect")
+        .attr("x", (_, i) => 550 + 25 * i)
+        .attr("y", 25)
+        .attr("width", 25)
+        .attr("height", 25)
+        .style("fill", (_, i) => colors[i]);
     });
 }
 drawMap();
