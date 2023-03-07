@@ -1,11 +1,11 @@
-let width = 950;
-let height = 600;
+const main = d3.select("main").node();
+const width = main.clientWidth;
+const height = main.clientHeight;
 
 const svg = d3
   .select("main")
   .append("svg")
-  .attr("width", width)
-  .attr("height", height);
+  .attr("viewbox", `0 0 ${width} ${height}`);
 
 const colors = [
   "rgb(210, 255, 255)",
@@ -16,6 +16,7 @@ const colors = [
   "rgb(0, 255, 0)",
 ];
 
+let counties; // Need to be accessible in both drawMap and update.
 async function drawMap() {
   const educationData = await fetch(
     "https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/for_user_education.json"
@@ -28,8 +29,12 @@ async function drawMap() {
   )
     .then((respons) => respons.json())
     .then((data) => {
-      const counties = topojson.feature(data, data.objects.counties);
-      const path = d3.geoPath();
+      counties = topojson.feature(data, data.objects.counties);
+
+      const projection = d3
+        .geoIdentity()
+        .fitSize([width * 0.95, height], counties);
+      const path = d3.geoPath(projection);
 
       svg
         .selectAll("path")
@@ -98,17 +103,38 @@ async function drawMap() {
       const legend = svg
         .append("g")
         .attr("id", "legend")
-        .attr("transform", `translate(10,10)`);
+        .attr("transform", `translate(0,0)`);
       legend
         .selectAll("rect")
         .data(colors)
         .enter()
         .append("rect")
-        .attr("x", (_, i) => 550 + 25 * i)
-        .attr("y", 25)
-        .attr("width", 25)
-        .attr("height", 25)
+        .attr("x", (_, i) => width * 0.5 + width * 0.02 * i)
+        .attr("y", 1)
+        .attr("width", width * 0.02)
+        .attr("height", height * 0.02)
         .style("fill", (_, i) => colors[i]);
     });
 }
 drawMap();
+
+function resize() {
+  // For the svg itself:
+  const newWidth = main.clientWidth;
+  const newHeight = main.clientHeight;
+  svg.attr("width", newWidth);
+  svg.attr("height", newHeight);
+
+  // For the map:
+  const projection = d3.geoIdentity().fitSize([newWidth, newHeight], counties);
+  const path = d3.geoPath(projection);
+  svg.selectAll(".county").attr("d", path);
+  const legend = svg
+    .select("#legend")
+    .selectAll("rect")
+    .attr("x", (_, i) => newWidth * 0.5 + newWidth * 0.02 * i)
+    .attr("width", newWidth * 0.02)
+    .attr("height", newHeight * 0.02);
+}
+
+d3.select(window).on("resize", resize);
