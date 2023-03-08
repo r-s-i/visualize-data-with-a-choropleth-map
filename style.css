@@ -4,6 +4,13 @@
   box-sizing: border-box;
 }
 
+:root {
+  color-scheme: dark light;
+}
+#fcc_test_suite_wrapper {
+  color-scheme: light;
+}
+
 header {
   display: flex;
   justify-content: center;
