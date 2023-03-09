@@ -86,20 +86,24 @@ async function drawMap() {
           const attributes = e.target.attributes;
           const countyName = attributes.countyName.value;
           const countyProcent = attributes["data-education"].value;
+
           const tooltipOuter = svg
             .append("g")
             .attr("id", "tooltip")
             .attr("data-education", countyProcent);
-
           const tooltipInner = tooltipOuter
             .append("foreignObject")
             .attr("width", 250)
             .attr("height", 50)
             .html(`${countyName}: ${countyProcent} %`);
+
+          e.target.style.opacity = 0.33;
         })
         .on("mouseout", (e) => {
           const tooltipOuter = d3.select("#tooltip");
           tooltipOuter.remove();
+
+          e.target.style.opacity = 1;
         });
 
       addingLegend(width, height);
