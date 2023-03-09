@@ -6,14 +6,15 @@ const svg = d3
   .select("main")
   .append("svg")
   .attr("viewbox", `0 0 ${width} ${height}`);
+const map = svg.append("g");
 
 const colors = [
-  "rgb(210, 255, 255)",
-  "rgb(180, 255, 255)",
-  "rgb(135, 255, 204)",
-  "rgb(90, 255, 153)",
-  "rgb(45, 255, 102)",
-  "rgb(0, 255, 0)",
+  "rgb(255, 215, 0)",
+  "rgb(255, 255, 0)",
+  "rgb(173, 255, 47)",
+  "rgb(69, 171, 47)",
+  "rgb(34, 139, 34)",
+  "rgb(0, 128, 0)",
 ];
 
 let counties; // Need to be accessible in both drawMap and update.
@@ -33,10 +34,11 @@ async function drawMap() {
 
       const projection = d3
         .geoIdentity()
-        .fitSize([width * 0.95, height], counties);
+        .fitSize([width * 0.9, height * 0.9], counties);
       const path = d3.geoPath(projection);
 
-      svg
+      map.attr("transform", `translate(${0}, ${height * 0.05})`);
+      map
         .selectAll("path")
         .data(counties.features)
         .enter()
@@ -100,20 +102,7 @@ async function drawMap() {
           tooltipOuter.remove();
         });
 
-      const legend = svg
-        .append("g")
-        .attr("id", "legend")
-        .attr("transform", `translate(0,0)`);
-      legend
-        .selectAll("rect")
-        .data(colors)
-        .enter()
-        .append("rect")
-        .attr("x", (_, i) => width * 0.5 + width * 0.02 * i)
-        .attr("y", 1)
-        .attr("width", width * 0.02)
-        .attr("height", height * 0.02)
-        .style("fill", (_, i) => colors[i]);
+      addingLegend(width, height);
     });
 }
 drawMap();
@@ -122,19 +111,71 @@ function resize() {
   // For the svg itself:
   const newWidth = main.clientWidth;
   const newHeight = main.clientHeight;
-  svg.attr("width", newWidth);
-  svg.attr("height", newHeight);
+  map.attr("width", newWidth);
+  map.attr("height", newHeight);
 
-  // For the map:
-  const projection = d3.geoIdentity().fitSize([newWidth, newHeight], counties);
+  // For the paths:
+
+  const projection = d3
+    .geoIdentity()
+    .fitSize([newWidth * 0.9, newHeight * 0.9], counties);
   const path = d3.geoPath(projection);
-  svg.selectAll(".county").attr("d", path);
-  const legend = svg
-    .select("#legend")
-    .selectAll("rect")
-    .attr("x", (_, i) => newWidth * 0.5 + newWidth * 0.02 * i)
-    .attr("width", newWidth * 0.02)
-    .attr("height", newHeight * 0.02);
+  map.selectAll(".county").attr("d", path);
+
+  // For legend:
+  addingLegend(newWidth, newHeight);
 }
 
 d3.select(window).on("resize", resize);
+
+function addingLegend(width, height) {
+  const prevLegend = d3.select("#legend");
+  prevLegend.remove();
+
+  const legend = svg
+    .append("g")
+    .attr("id", "legend")
+    .attr("transform", `translate(${width * 0.5}, 1)`);
+
+  legend
+    .selectAll("rect")
+    .data(colors)
+    .enter()
+    .append("rect")
+    .attr("x", (_, i) => -width * 0.07 + width * 0.02 * i)
+    .attr("width", width * 0.02)
+    .attr("height", height * 0.02)
+    .style("fill", (_, i) => colors[colors.length - 1 - i]);
+
+  const xScale = d3
+    .scaleThreshold()
+    .range(
+      Array.from({ length: 7 }, (_, i) => {
+        return -width * 0.07 + i * width * 0.02;
+      })
+    )
+    .domain(["10", "20", "30", "40", "50+"]);
+
+  const xAxis = d3.axisBottom(xScale);
+
+  const line = legend
+    .append("g")
+    .attr("transform", `translate(${0}, ${height * 0.02})`)
+    .call(xAxis);
+
+  line
+    .selectAll("text")
+    .attr("y", (_, i) => {
+      if (width < 900 && i % 2 === 1) {
+        return 16;
+      } else {
+        return 8;
+      }
+    })
+    .attr("x", (e) => {
+      if (e.includes("+")) {
+        return 3;
+      }
+    })
+    .attr("font-size", "8");
+}
