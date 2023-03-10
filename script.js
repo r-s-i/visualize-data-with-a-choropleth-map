@@ -1,6 +1,6 @@
 const main = d3.select("main").node();
-const width = main.clientWidth;
-const height = main.clientHeight;
+let width = main.clientWidth;
+let height = main.clientHeight;
 
 const svg = d3
   .select("main")
@@ -83,27 +83,10 @@ async function drawMap() {
         })
 
         .on("mouseover", (e) => {
-          const attributes = e.target.attributes;
-          const countyName = attributes.countyName.value;
-          const countyProcent = attributes["data-education"].value;
-
-          const tooltipOuter = svg
-            .append("g")
-            .attr("id", "tooltip")
-            .attr("data-education", countyProcent);
-          const tooltipInner = tooltipOuter
-            .append("foreignObject")
-            .attr("width", 250)
-            .attr("height", 50)
-            .html(`${countyName}: ${countyProcent} %`);
-
-          e.target.style.opacity = 0.33;
+          addingTooltip(width, height, e);
         })
         .on("mouseout", (e) => {
-          const tooltipOuter = d3.select("#tooltip");
-          tooltipOuter.remove();
-
-          e.target.style.opacity = 1;
+          removingTooltip(e);
         });
 
       addingLegend(width, height);
@@ -113,21 +96,20 @@ drawMap();
 
 function resize() {
   // For the svg itself:
-  const newWidth = main.clientWidth;
-  const newHeight = main.clientHeight;
-  map.attr("width", newWidth);
-  map.attr("height", newHeight);
-
+  width = main.clientWidth;
+  height = main.clientHeight;
+  map.attr("width", width);
+  map.attr("height", height);
+  map.attr("transform", `translate(${0}, ${height * 0.05})`);
   // For the paths:
 
   const projection = d3
     .geoIdentity()
-    .fitSize([newWidth * 0.9, newHeight * 0.9], counties);
+    .fitSize([width * 0.9, height * 0.9], counties);
   const path = d3.geoPath(projection);
   map.selectAll(".county").attr("d", path);
-
   // For legend:
-  addingLegend(newWidth, newHeight);
+  addingLegend(width, height);
 }
 
 d3.select(window).on("resize", resize);
@@ -182,4 +164,28 @@ function addingLegend(width, height) {
       }
     })
     .attr("font-size", "8");
+}
+
+function addingTooltip(width, height, e) {
+  const attributes = e.target.attributes;
+  const countyName = attributes.countyName.value;
+  const countyProcent = attributes["data-education"].value;
+
+  const tooltip = svg
+    .append("foreignObject")
+    .attr("id", "tooltip")
+    .attr("data-education", countyProcent)
+    .attr("width", width * 0.5)
+    .attr("height", height * 0.04)
+    .attr("y", height - height / (100 / 4))
+    .attr("x", width / 2 - width * 0.25)
+    .html(`${countyName}: <span class="nobr">${countyProcent} %</span>`);
+
+  e.target.style.opacity = 0.33;
+}
+function removingTooltip(e) {
+  const tooltip = d3.select("#tooltip");
+  tooltip.remove();
+
+  e.target.style.opacity = 1;
 }

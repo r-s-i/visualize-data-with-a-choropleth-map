@@ -38,6 +38,15 @@ svg {
   stroke-width: 0.25px;
 }
 
+#tooltip {
+  font-size: 1.75vh;
+  font-size: 1.75dvh;
+  text-align: center;
+}
+.nobr {
+  white-space: nowrap;
+}
+
 footer {
   height: 10vh;
 }
