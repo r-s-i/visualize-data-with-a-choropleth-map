@@ -71,7 +71,7 @@ button {
   top: 20%;
   width: 90%;
   left: 5%;
-  padding: 2vh
+  padding: 2vh;
 }
 @media (prefers-color-scheme: dark) {
   #info-a {
