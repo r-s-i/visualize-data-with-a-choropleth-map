@@ -153,7 +153,7 @@ function addingLegend(width, height) {
   line
     .selectAll("text")
     .attr("y", (_, i) => {
-      if (width < 900 && i % 2 === 1) {
+      if (width < 600 && i % 2 === 1) {
         return 16;
       } else {
         return 8;
