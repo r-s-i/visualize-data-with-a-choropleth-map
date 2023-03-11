@@ -205,3 +205,9 @@ test.addEventListener("mouseup", (i) => {
     fccTest.style.visibility = "hidden";
   }
 });
+
+const infoButton = $("info-b");
+const infoAside = $("info-a");
+infoButton.addEventListener("mouseup", (i) => {
+  infoAside.classList.toggle("visible");
+});

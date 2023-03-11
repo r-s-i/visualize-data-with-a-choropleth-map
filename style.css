@@ -61,3 +61,26 @@ button {
   font-size: 1.5vh;
   border: 0.1vh solid;
 }
+
+#info-a {
+  visibility: hidden;
+  position: absolute;
+  top: 50%;
+  width: 50%;
+  left: 25%;
+  padding: 2vh
+}
+@media (prefers-color-scheme: dark) {
+  #info-a {
+    background: black;
+  }
+}
+@media (prefers-color-scheme: light) {
+  #info-a {
+    background: white;
+  }
+}
+
+.visible#info-a  {
+  visibility: visible;
+}
