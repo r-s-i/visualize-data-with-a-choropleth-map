@@ -108,6 +108,7 @@ function resize() {
     .fitSize([width * 0.9, height * 0.9], counties);
   const path = d3.geoPath(projection);
   map.selectAll(".county").attr("d", path);
+
   // For legend:
   addingLegend(width, height);
 }
@@ -189,3 +190,18 @@ function removingTooltip(e) {
 
   e.target.style.opacity = 1;
 }
+
+// Non-d3 related code:
+const $ = (id) => document.getElementById(id);
+
+// For footer:
+const test = $("tests");
+const fccTest = $("fcc_test_suite_wrapper");
+fccTest.style.visibility = "hidden";
+test.addEventListener("mouseup", (i) => {
+  if (fccTest.style.visibility === "hidden") {
+    fccTest.style.visibility = "visible";
+  } else {
+    fccTest.style.visibility = "hidden";
+  }
+});
