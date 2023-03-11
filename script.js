@@ -17,7 +17,7 @@ const colors = [
   "rgb(0, 128, 0)",
 ];
 
-let counties; // Need to be accessible in both drawMap and update.
+let counties; // Need to be accessible in both drawMap and resize.
 async function drawMap() {
   const educationData = await fetch(
     "https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/for_user_education.json"
