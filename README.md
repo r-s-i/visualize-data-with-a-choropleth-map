@@ -1,4 +1,4 @@
-# Education Degrees Granted in the United States
+# Degrees Granted in the United States
 
 This is my answer to freeCodeCamp's Visualize Data with a Choropleth Map project. I have to assume it shows data that was gathered between 2010 and 2014. When the user hovers over one of the counties, its opacity will decrease and a tooltip with the county's name (and a percentage) will appear.
 
