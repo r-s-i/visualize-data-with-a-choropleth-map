@@ -95,13 +95,11 @@ async function drawMap() {
 drawMap();
 
 function resize() {
-  // For the svg itself:
   width = main.clientWidth;
   height = main.clientHeight;
   map.attr("width", width);
   map.attr("height", height);
   map.attr("transform", `translate(${0}, ${height * 0.05})`);
-  // For the paths:
 
   const projection = d3
     .geoIdentity()
@@ -109,7 +107,6 @@ function resize() {
   const path = d3.geoPath(projection);
   map.selectAll(".county").attr("d", path);
 
-  // For legend:
   addingLegend(width, height);
 }
 
@@ -194,7 +191,6 @@ function removingTooltip(e) {
 // Non-d3 related code:
 const $ = (id) => document.getElementById(id);
 
-// For footer:
 const test = $("tests");
 const fccTest = $("fcc_test_suite_wrapper");
 fccTest.style.visibility = "hidden";
